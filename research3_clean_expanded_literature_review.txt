@@ -1,0 +1,264 @@
+Research 3 Literature Review — Cleaned and Expanded
+Topic family: Pure-LLM reliability, factual consistency, confidence, calibration, and abstention
+Prepared: October 2026
+
+Purpose
+This document separates the papers already reviewed by the researcher from genuinely additional papers. Repeated papers are listed only once. The reviews below are concise but include problem, method, findings, limitation, and relevance to Research 3.
+
+PART A — PAPERS ALREADY REVIEWED
+
+A1. Flaw or Artifact? Rethinking Prompt Sensitivity in Evaluating LLMs
+Link: https://www.arxiv.org/pdf/2509.01790.pdf
+Problem: Tests whether prompt sensitivity reflects genuine model weakness or artifacts of rigid evaluation rules.
+Setup: Six benchmarks, seven LLMs, and twelve prompt templates that vary wording and answer format.
+Finding: Prompt changes can alter measured performance and model rankings; however, some apparent sensitivity depends on evaluation and answer-parsing choices.
+Limitation: Limited prompt count and reliance on a main LLM judge.
+Relevance: Shows that single-prompt evaluation can be unreliable, but a generic prompt-sensitivity replication would not be novel.
+
+A2. POSIX: A Prompt Sensitivity Index for Large Language Models
+Link: https://arxiv.org/pdf/2410.02185.pdf
+Problem: Existing sensitivity measures do not jointly capture response divergence, entropy, semantic coherence, and confidence variation.
+Setup: MMLU, Alpaca, and BBH; 60 intent-aligned prompt variants; eight open models.
+Finding: POSIX provides a unified response-distribution sensitivity measure across spelling, template, paraphrase, and mixed perturbations.
+Limitation: Pairwise computation is expensive; a few items were removed for safety-filter reasons.
+Relevance: A new study should not merely invent another generic prompt-sensitivity score without a clear unmet use case.
+
+A3. ProSA: Assessing and Understanding Prompt Sensitivity of LLMs
+Link: https://arxiv.org/pdf/2410.12405.pdf
+Problem: Dataset-level averages hide instance-level sensitivity and subjective-evaluation variation.
+Setup: Objective and subjective benchmarks, eight objective-task models, manually constructed prompt variants.
+Finding: PromptSensiScore measures instance-level sensitivity and reveals that sensitivity varies across tasks, models, and prompt aspects.
+Limitation: Few-shot experiments and subjective benchmarks used limited variants because of compute/API cost.
+Relevance: Instance-level analysis is established; a new paper needs a different setting or practical consequence.
+
+A4. Say It Another Way: User-Grounded Automated Paraphrasing Framework (AUGMENT)
+Link: https://arxiv.org/pdf/2505.03563v3.pdf
+Problem: Unconstrained automatic paraphrases may not represent realistic user language variation.
+Setup: BBQ and MMLU; controlled paraphrase types such as synonym, voice, formality, and dialect variation; human and automatic quality checks.
+Finding: Different linguistic transformations produce different sensitivity patterns; unconstrained paraphrase is not always a reliable audit.
+Limitation: English-only, MCQ-only, and imperfect automatic filters, especially for voice changes.
+Relevance: A paraphrase study must avoid simply reproducing this controlled audit framework.
+
+A5. Effect of Scaling, Retrieval Augmentation and Form on Factual Consistency
+Link: https://ar5iv.labs.arxiv.org/html/2311.01307
+Problem: Tests whether model scale, retrieval augmentation, and question form reduce factual inconsistency across paraphrased factual queries.
+Setup: ParaRel* and LLaMA/Atlas/BERT/T5 model families.
+Finding: Factual consistency depends on model scale and query form; retrieval and model architecture affect consistency differently.
+Limitation: Training-corpus effects are confounded; one main benchmark; cloze format is not ideal for all autoregressive models.
+Relevance: Factual consistency under paraphrase is already an established research direction.
+
+A6. Factual Confidence of LLMs: Reliability and Robustness of Current Estimators
+Link: https://aclanthology.org/2024.acl-long.250.pdf
+Alternative: https://arxiv.org/html/2406.13415
+Problem: Confidence-estimation methods lacked a fair comparison, and confidence might vary under paraphrase or translation.
+Setup: LAMA T-REx and PopQA; eight open-weight models; probes, probabilities, verbalized confidence, surrogate-token scores, and consistency methods.
+Finding: Trained probes generally perform best; prompt-based methods can be sensitive; aggregate methods may look stable while individual fact confidence varies.
+Limitation: Atomic facts only; probe needs labelled data; reasoning and in-context settings were not tested.
+Relevance: A pure black-box factual-confidence study must be clearly different from this benchmark.
+
+A7. Predicting QA Performance through Semantic Consistency (PopQA-TP)
+Link: https://aclanthology.org/2023.gem-1.12.pdf
+Dataset link: https://huggingface.co/datasets/ibm-research/popqa-tp
+Problem: Tests whether answer consistency across factual-question paraphrases predicts correctness without ground truth.
+Setup: PopQA-TP with 118,643 templated paraphrase questions and several large models.
+Finding: Semantic consistency can help predict correctness, although external features such as popularity and category also matter.
+Limitation: Short factual QA only; not tested on long-form generation.
+Relevance: A simple paraphrase-consistency factual-QA paper would substantially overlap with this work.
+
+A8. Semantic Consistency for Assuring Reliability of LLMs
+Link: https://arxiv.org/pdf/2308.09138.pdf
+Problem: Lexical matching misses semantically equivalent answers; consistency should be evaluated semantically and potentially used to improve reliability.
+Setup: TruthfulQA, multiple models, paraphrase and temperature-based variation, and Ask-to-Choose.
+Finding: Semantic consistency is more appropriate than exact matching; candidate selection can improve reliability in the tested setting.
+Limitation: Underlying semantic judge can make errors; A2C requires multiple model calls; one benchmark and QA-style tasks.
+Relevance: A new project should not simply repeat semantic consistency or A2C.
+
+A9. Do LLMs Know When to NOT Answer?
+Link: https://aclanthology.org/2025.coling-main.627.pdf
+Alternative: https://arxiv.org/html/2407.16221
+Problem: Provides a black-box evaluation of abstention, especially when token probabilities are unavailable.
+Setup: Abstain-QA, 2,900 five-option MCQs, answerable/unanswerable halves, several model families, abstention clauses, confidence prompts, and CoT.
+Finding: Models abstain poorly on reasoning and under-represented-domain questions; abstention prompts and CoT help unevenly.
+Limitation: English MCQ-only setting and small new domain component.
+Relevance: Generic answerable/unanswerable MCQ evaluation is already covered.
+
+A10. AbstentionBench: Reasoning LLMs Fail on Unanswerable Questions
+Link: https://openreview.net/pdf?id=OkHC30LLpO
+Code/data: https://github.com/facebookresearch/AbstentionBench
+Problem: Holistic evaluation of unknown, false-premise, stale, subjective, and underspecified questions.
+Setup: 20 datasets, 35,000+ unanswerable questions, 20 frontier and reasoning models.
+Finding: Abstention remains unsolved; reasoning fine-tuning can lower abstention, and higher accuracy does not guarantee better abstention.
+Limitation: English-only, possible benchmark contamination, and no new training method.
+Relevance: A generic abstention benchmark paper would duplicate this work.
+
+A11. Can LLMs Express Their Uncertainty?
+Link: https://arxiv.org/pdf/2306.13063.pdf
+Problem: Tests whether black-box verbal confidence can predict correctness.
+Setup: Eight reasoning datasets, several open and closed models, prompting, sampling, and aggregation strategies.
+Finding: Verbal confidence is often overconfident; consistency-based sampling can be useful for predicting failure.
+Limitation: Unique-answer tasks only; black-box methods remain weak on some domains.
+Relevance: Confidence elicitation alone is not a new contribution.
+
+A12. Just Ask for Calibration
+Link: https://aclanthology.org/2023.emnlp-main.330.pdf
+Problem: RLHF models may have poorly calibrated token probabilities, while black-box models do not expose logits.
+Setup: TriviaQA, SciQ, TruthfulQA; verbal confidence, multiple guesses, CoT, and calibration metrics.
+Finding: Verbalized confidence can outperform conditional probability estimates in calibration, but results depend on prompt and model.
+Limitation: Short factual QA, mostly closed models, prompt sensitivity.
+Relevance: A new project must add a stronger distinction than simply comparing confidence prompts.
+
+A13. Survey of Confidence Estimation and Calibration in LLMs
+Link: https://aclanthology.org/2024.naacl-long.366.pdf
+Problem: Organizes confidence and calibration methods.
+Setup: Survey only; no original experiment.
+Finding: Methods include white-box logits/probes and black-box verbal, surrogate, and consistency approaches.
+Limitation: No new empirical validation; coverage may omit recent work.
+Relevance: Use for terminology and taxonomy, not as experimental evidence.
+
+A14. Evaluating and Calibrating LLM Confidence on Multiple-Correct-Answer Questions
+Link: https://arxiv.org/html/2602.07842
+Problem: Single-answer calibration methods underestimate confidence when multiple answers are valid.
+Setup: MACE, 12,000 factual questions, 1/2/4/6 valid-answer conditions, many models, and Semantic Confidence Aggregation.
+Finding: Confidence falls as the number of valid answers grows; SCA improves calibration in mixed settings.
+Limitation: Formulaic English templates and short answers only.
+Relevance: Multi-answer calibration is already a mature recent direction.
+
+PART B — GENUINELY ADDITIONAL OR NEWLY CHECKED PAPERS
+
+B1. Do Automatic Factuality Metrics Measure Factuality?
+Link: https://arxiv.org/html/2411.16638
+Problem: Tests whether automatic factuality metrics truly measure factuality or exploit surface features.
+Finding: Metric scores can be influenced by shallow cues, so factuality evaluation requires careful validation.
+Limitation: Findings depend on selected metrics and datasets.
+Relevance: Useful if Research 3 uses automatic correctness or factuality judges; it warns against trusting one metric.
+
+B2. Evaluating LLM Reliability Beyond Accuracy
+Link: https://arxiv.org/html/2607.22554
+Problem: Aggregate accuracy hides item-level instability when the same question is paraphrased.
+Setup: Four benchmarks, 13 models, factual QA and mathematical reasoning.
+Finding: Accuracy may change modestly while individual answers frequently flip between correct and incorrect; self-paraphrasing can sometimes recover a correct answer.
+Limitation: Still close to existing semantic-consistency literature; exact benchmark scope and intervention details need careful comparison.
+Relevance: Strongest direct evidence that a simple prompt-robustness project would overlap with current work.
+
+B3. State of What Art? A Call for Multi-Prompt LLM Evaluation
+Link: https://arxiv.org/html/2401.00595
+Problem: Single-prompt benchmark scores can be unstable.
+Finding: Multi-prompt evaluation is necessary for more reliable model comparison.
+Limitation: Primarily a methodological call and framework rather than one focused factual-QA experiment.
+Relevance: Background justification for evaluating models with multiple prompts.
+
+B4. How Often Are Errors in Natural Language Reasoning Due to Paraphrastic Variability?
+Link: https://direct.mit.edu/tacl/article/doi/10.1162/tacl_a_00692/124462/How-Often-Are-Errors-in-Natural-Language-Reasoning
+Problem: Separates genuine reasoning errors from errors caused by meaning-preserving paraphrase.
+Finding: Paraphrastic variation can explain a meaningful share of reasoning failures.
+Limitation: Task/domain coverage is narrower than general reliability evaluation.
+Relevance: Supports studying error flips, but a new work needs a distinct task or consequence.
+
+B5. Can a Model Catch Its Own Hallucinations for Free?
+Link: https://arxiv.org/pdf/2608.26121.pdf
+Problem: Tests whether label-free doubt signals can support abstention without a labelled calibration dataset.
+Finding: Uncertainty signals derived from model behavior can be competitive with labelled abstention approaches.
+Limitation: Recent preprint; exact transfer across tasks/models requires verification.
+Relevance: Important overlap for any low-cost confidence/abstention proposal.
+
+B6. Answering the Unanswerable Is to Err Knowingly
+Link: https://web3.arxiv.org/pdf/2508.18760
+Problem: Analyzes why reasoning LLMs answer questions that should be refused.
+Finding: Reasoning ability does not guarantee correct abstention.
+Limitation: Focuses on reasoning models and unanswerable settings.
+Relevance: Supports the distinction between solving and answerability recognition.
+
+B7. Do LLMs Know What They Know?
+Link: https://arxiv.org/html/2603.25112
+Problem: Measures metacognitive information with signal-detection-style methods rather than only verbal confidence.
+Setup: Four open models and 224,000 factual QA trials.
+Finding: Metacognitive information varies across models and is not predicted simply by answer accuracy.
+Limitation: Open-ended QA makes some classical metacognitive metrics difficult; latest preprint status.
+Relevance: Strong overlap with any claim about model self-knowledge or confidence reliability.
+
+B8. Fact-Checking with LLMs via Probabilistic Certainty and Consistency
+Link: https://web3.arxiv.org/pdf/2601.02574
+Problem: Uses confidence and response consistency to decide when internal knowledge is sufficient and when verification is needed.
+Finding: Connects uncertainty estimation to an adaptive fact-checking decision.
+Limitation: Exact implementation and benchmark scope require checking before use.
+Relevance: Makes a generic confidence-to-action proposal less novel.
+
+B9. Bridging the Detection-to-Abstention Gap in Reasoning Models
+Link: https://arxiv.org/pdf/2605.28070.pdf
+Problem: A reasoning model may detect missing information but still produce a definitive answer.
+Finding: Separates detection of insufficient information from actual final abstention and proposes Judge-Then-Solve.
+Limitation: Requires training and focuses on reasoning models.
+Relevance: A no-training black-box version could be distinct, but the general gap is now explicitly named and studied.
+
+B10. Two Axes of LLM Abstention
+Link: https://arxiv.org/html/2607.08456
+Problem: Correctness of an answer and sufficiency of information are different dimensions.
+Finding: Abstention should evaluate both whether the answer is correct and whether the question is answerable from available information.
+Limitation: Exact benchmark coverage should be checked before building on it.
+Relevance: Useful conceptual framework; generic abstention would overlap.
+
+B11. When Silence Is Golden: Abstention in Temporal QA
+Link: https://ar5iv.labs.arxiv.org/html/2602.04755
+Problem: Time-sensitive knowledge becomes stale, so models need to abstain when temporal validity is uncertain.
+Finding: Temporal QA provides a focused abstention setting beyond generic unknown questions.
+Limitation: Temporal domain-specific; not a general solution.
+Relevance: A possible narrower direction, but it requires dated datasets and careful time splits.
+
+B12. Do LLMs Know When Not to Answer in Medical QA?
+Link: https://aclanthology.org/2025.uncertainlp-main.4.pdf
+Problem: Evaluates abstention under clinical uncertainty and missing medical information.
+Finding: Medical uncertainty creates confident-error risks.
+Limitation: Medical domain; not suitable if Research 3 remains general-domain.
+Relevance: Background only; avoid repeating Research 1's medical focus.
+
+B13. Factuality of Large Language Models: A Survey
+Link: https://aclanthology.org/2024.emnlp-main.1088.pdf
+Problem: Surveys causes, detection, evaluation, and mitigation of LLM factuality failures.
+Finding: Factuality is broader than simple exact-match accuracy.
+Limitation: Survey only; no original experiment.
+Relevance: General background reference.
+
+PART C — DUPLICATE CHECK
+
+Repeated between the original set and the additional list:
+1. Factual Confidence of LLMs.
+2. Can LLMs Express Their Uncertainty?
+3. Just Ask for Calibration.
+4. Confidence Estimation and Calibration survey.
+5. Multiple-correct-answer confidence calibration.
+6. Do LLMs Know When to NOT Answer?
+7. AbstentionBench.
+8. Semantic Consistency for Assuring Reliability.
+9. Predicting QA Performance through Semantic Consistency / PopQA-TP.
+10. The Effect of Scaling, Retrieval Augmentation and Form on Factual Consistency.
+
+These repeated papers should not be counted twice in the final bibliography.
+
+PART D — LITERATURE SYNTHESIS
+
+The literature has already substantially covered:
+- Generic prompt sensitivity.
+- Paraphrase consistency in factual QA.
+- Semantic consistency as a correctness predictor.
+- Verbalized confidence and calibration.
+- Generic answerable/unanswerable abstention.
+- Multiple-answer calibration.
+- Detection of missing information versus abstention.
+
+Therefore, the following would be weak or duplicative Research 3 titles:
+- Prompt Robustness of LLMs for Factual QA.
+- Can LLMs Say I Don't Know?
+- Confidence Calibration of Open-Weight LLMs.
+- Paraphrase Consistency in PopQA.
+- Abstention on AbstentionBench.
+
+A defensible topic must add a clearly different axis, such as:
+- A new deployment-relevant decision rule, not just a confidence score.
+- A carefully controlled time-sensitive setting.
+- A new answerability-to-action analysis without training.
+- A new evaluation condition not covered by the existing benchmarks.
+- A strong cross-model analysis using only black-box accessible outputs.
+
+Important status
+
+A Research 3 title should not be permanently locked from this review alone. The literature is crowded, and several 2026 preprints are very close to the proposed confidence/abstention idea. The correct next step is to choose one narrow gap only after a final targeted comparison of the candidate dataset and model protocol.
